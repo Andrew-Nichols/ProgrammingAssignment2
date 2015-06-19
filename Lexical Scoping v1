@@ -1,0 +1,93 @@
+# R Programming - Coursera
+# Programming Assignment 2 - Lexical Scoping
+# (How to calculate, cache, and retrieve the inverse of a square matrix)
+# Submitter:  A. Nichols
+# Date:  18 June 2015
+
+# To source this code in the R console, use this (minus the "#"):
+# source("20150618lexical_scoping_assignment_v2.R")
+
+# Initialize two 3x3 matrices (and their inverses) to test this code:
+
+# Test matrix 1 (and its inverse):
+testv1 <- c(.2, .4, .7, 1, 2, 3, 9, 10, 11)
+testm1 <- matrix(testv1, nrow = 3, ncol = 3)
+invtestm1 <- solve(testm1)
+
+# Test matrix 2 (and its inverse):
+testv2 <- c(3, 0, 9, .1, .2, .3, 1, 7, 18)
+testm2 <- matrix(testv2, nrow = 3, ncol = 3)
+invtestm2 <- solve(testm2)
+
+# Initialize an empty matrix (and its inverse) for the code below:
+newm <- matrix()
+invnewm <- matrix()
+
+# The first function here accepts a matrix and can cache its inverse.
+# To use makeCacheMatrix, subset the function and pass it an argument:
+
+# Example 1:
+# Subset/call with:		a <- makeCacheMatrix(testm1)
+# Return current matrix:	a$get()
+
+# Example 2:  
+# Subset with "a":		a <- makeCacheMatrix()
+# Set current matrix:		a$set(testm2)
+# Return current matrix:	a$get()
+
+makeCacheMatrix <- function(newm) {
+	  invnewm <- NULL
+
+	  # "set" enables user to input a square matrix to find its inverse
+        set <- function(y) {
+                newm <<- y
+                invnewm <<- NULL
+        }
+
+	  # "get" enables user to see the current matrix
+        get <- function() newm
+
+	  # "setinv" returns the inverse of the current matrix, if
+	  # cacheSolve has been called (otherwise, it returns
+	  # NULL, ... or something else if a$setinv() has been used)
+	  setinv <- function(q) invnewm <<- q
+
+	  # "getinv" stores the inverse of the last matrix sent to
+	  # cacheSolve (below)
+        getinv <<- function() invnewm
+
+	  # The list command stores four functions in makeCacheMatrix;
+	  # it enables objects sent to makeCacheMatrix to have all
+	  # four functions.
+        list(set = set, get = get, setinv = setinv, getinv = getinv)
+}
+
+# The function below, "cacheSolve", computes the inverse of a matrix
+# stored in makeCacheMatrix.  If the inverse of the matrix has previously 
+# been determined, cacheSolve returns the existing inverse of the matrix
+# without doing additional calculations.  cacheSolve updates "setinv"
+# in makeCacheMatrix, if appropriate.
+
+cacheSolve <- function(newm) {
+        invnewm <- a$getinv()  # gets current inverse from makeCacheMatrix
+        if(!is.null(invnewm)) {
+                message("getting cached inverse matrix")
+                return(invnewm)
+		    # Note: cacheSolve is only a cache for the inverse
+		    # of a matrix.  You must call makeCacheMatrix
+ 		    # first to ensure correct output from cacheSolve.
+        }
+	  # If the inverse of the matrix has not already been determined,
+	  # cacheSolve executes additional steps:
+        mdata <- a$get()        # get current matrix from makeCacheMatrix
+        invnewm <- solve(mdata) # determine inverse of current matrix
+	  a$setinv(invnewm)	  # update 'setinv' in makeCacheMatrix
+        invnewm                 # output inverse of current matrix
+}
+
+# Compare calculated inverse matrix for testm1 with invtestm1
+# Compare calculated inverse matrix for testm2 with invtestm2
+
+##### End of program #####
+
+
